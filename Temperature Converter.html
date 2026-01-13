@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<!-- saved from url=(0041)file:///C:/Users/sai/Desktop/project.html -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  
+  <title>Simple Temperature Converter</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #f3f4f6;
+      color: #111827;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* light that follows cursor */
+    .cursor-light {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      background:
+        radial-gradient(
+          circle 140px at var(--x, 50%) var(--y, 50%),
+          rgba(255, 255, 255, 0.7),
+          transparent 70%
+        );
+      transition: background 0.04s linear;
+    }
+
+    .container {
+      position: relative;
+      z-index: 1;
+      background: #ffffff;
+      border: 1px solid #e5e7eb;
+      border-radius: 8px;
+      padding: 20px 24px;
+      box-shadow: 0 10px 25px rgba(15, 23, 42, 0.12);
+      width: 100%;
+      max-width: 360px;
+    }
+
+    h1 {
+      font-size: 1.3rem;
+      text-align: center;
+      margin-bottom: 16px;
+    }
+
+    .row {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+
+    label {
+      font-size: 0.9rem;
+      margin-bottom: 4px;
+    }
+
+    input[type="number"] {
+      width: 100%;
+      padding: 8px 10px;
+      border-radius: 4px;
+      border: 1px solid #d1d5db;
+      font-size: 0.95rem;
+    }
+
+    input[type="number"]:focus {
+      outline: none;
+      border-color: #2563eb;
+      box-shadow: 0 0 0 1px #2563eb33;
+    }
+
+    .info {
+      font-size: 0.8rem;
+      color: #6b7280;
+      text-align: center;
+      margin-top: 6px;
+    }
+  </style>
+</head>
+<body>
+  <!-- cursor light -->
+  <div class="cursor-light" id="cursorLight" style="--x: 490px; --y: 356px;"></div>
+
+  <div class="container">
+    <h1>Temperature Converter</h1>
+
+    <div class="row">
+      <div>
+        <label for="celsius">Celsius (°C)</label>
+        <input type="number" id="celsius" placeholder="Enter Celsius">
+      </div>
+
+      <div>
+        <label for="fahrenheit">Fahrenheit (°F)</label>
+        <input type="number" id="fahrenheit" placeholder="Enter Fahrenheit">
+      </div>
+    </div>
+
+    <p class="info">Type in any box to convert to the other unit.</p>
+  </div>
+
+  <script>
+    const celsiusInput = document.getElementById("celsius");
+    const fahrenheitInput = document.getElementById("fahrenheit");
+    const cursorLight = document.getElementById("cursorLight");
+
+    let isUpdating = false;
+
+    function round(value) {
+      return Number.isFinite(value) ? Number(value.toFixed(2)) : "";
+    }
+
+    // C ↔ F standard formulas[web:12][web:57]
+    function cToF(c) {
+      const C = parseFloat(c);
+      if (isNaN(C)) return "";
+      return round((C * 9) / 5 + 32);
+    }
+
+    function fToC(f) {
+      const F = parseFloat(f);
+      if (isNaN(F)) return "";
+      return round(((F - 32) * 5) / 9);
+    }
+
+    celsiusInput.addEventListener("input", (e) => {
+      if (isUpdating) return;
+      isUpdating = true;
+
+      const value = e.target.value;
+      if (value === "") {
+        fahrenheitInput.value = "";
+      } else {
+        fahrenheitInput.value = cToF(value);
+      }
+
+      isUpdating = false;
+    });
+
+    fahrenheitInput.addEventListener("input", (e) => {
+      if (isUpdating) return;
+      isUpdating = true;
+
+      const value = e.target.value;
+      if (value === "") {
+        celsiusInput.value = "";
+      } else {
+        celsiusInput.value = fToC(value);
+      }
+
+      isUpdating = false;
+    });
+
+    // light follows cursor[web:37][web:41]
+    document.addEventListener("mousemove", (e) => {
+      cursorLight.style.setProperty("--x", e.clientX + "px");
+      cursorLight.style.setProperty("--y", e.clientY + "px");
+    });
+
+    window.addEventListener("load", () => {
+      const cx = window.innerWidth / 2;
+      const cy = window.innerHeight / 2;
+      cursorLight.style.setProperty("--x", cx + "px");
+      cursorLight.style.setProperty("--y", cy + "px");
+    });
+  </script>
+
+
+</body></html>
